@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+
+    <h2>Calorie Dashboard</h2>
+
+    {% if profile %}
+    <h3>My Profile</h3>
+
+    <p>Name: {{ profile.name }}</p>
+    <p>Age: {{ profile.age }}</p>
+    <p>Gender: {{ profile.gender }}</p>
+    <p>Height: {{ profile.height }} cm</p>
+    <p>Weight: {{ profile.weight }} kg</p>
+
+    <h3>Daily BMR: {{ required_calories }} calories</h3>
+
+    <h3>Weight Management Guidelines</h3>
+
+    <p>
+        Your BMR is an estimate of the calories your body
+        needs at rest. Your total daily calorie needs also
+        depend on your activity level.
+    </p>
+
+    <p>
+        For weight management, consider your activity level,
+        balanced nutrition, and individual needs.
+    </p>
+
+    <h3>Today's Consumed Calories: {{ consumed_calories }}</h3>
+
+    <h3>Remaining Calories: {{ remaining_calories }}</h3>
+
+    <a href="{% url 'profile' %}">Update Profile</a><br>
+    <a href="{% url 'add_food' %}">Add Food</a>
+
+    <h3>Today's Food History</h3>
+
+    {% for food in foods %}
+    <p>
+        {{ food.item_name }} -
+        {{ food.calorie_consumed }} calories
+    </p>
+    {% empty %}
+    <p>No food added today.</p>
+    {% endfor %}
+
+    {% else %}
+    <p>Please create your calorie profile first.</p>
+    <a href="{% url 'profile' %}">Create Profile</a>
+    {% endif %}
+
+</div>
+{% endblock %}
