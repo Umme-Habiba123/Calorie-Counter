@@ -79,6 +79,24 @@ def create_profile(request):
     })
     
 
+@login_required
+def add_food(request):
+    if request.method == 'POST':
+        form = FoodEntryForm(request.POST)
+
+        if form.is_valid():
+            food = form.save(commit=False)
+            food.user = request.user
+            food.save()
+
+            return redirect('dashboard')
+    else:
+        form = FoodEntryForm()
+
+    return render(request, 'add_food.html', {
+        'form': form
+    })
+
 
 @login_required
 def dashboard(request):
@@ -105,11 +123,12 @@ def dashboard(request):
                 - (4.676 * profile.age)
             )
 
-    foods = FoodEntry.objects.filter(
-        user=request.user,
-        date=timezone.localdate()
-    )
-
+        foods = FoodEntry.objects.filter(
+           user=request.user
+         )
+        
+    for food in foods:
+             print(food.item_name, food.calorie_consumed, food.date)
     consumed_calories = 0
 
     for food in foods:
@@ -123,23 +142,5 @@ def dashboard(request):
         'foods': foods,
         'consumed_calories': round(consumed_calories, 2),
         'remaining_calories': round(remaining_calories, 2),
-    })
-    
-
-@login_required
-def add_food(request):
-    if request.method == 'POST':
-        form = FoodEntryForm(request.POST)
-
-        if form.is_valid():
-            food = form.save(commit=False)
-            food.user = request.user
-            food.save()
-
-            return redirect('dashboard')
-    else:
-        form = FoodEntryForm()
-
-    return render(request, 'add_food.html', {
-        'form': form
+        
     })
